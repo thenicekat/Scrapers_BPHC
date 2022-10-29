@@ -32,6 +32,9 @@ const main = async (course) => {
                         dl.on('error', (err) => console.log('Download Failed', err));
                         dl.start().catch(err => console.error(err));
                     }
+                    else{
+                        console.log("Unsupported File Type: " + downloadLink);
+                    }
                 });
             })
             .catch(err => console.log(err))
