@@ -3,7 +3,7 @@ import { DownloaderHelper } from 'node-downloader-helper';
 import fs from 'fs';
 
 const main = async (course) => {
-    fetch('http://125.22.54.221:8080/jspui/browse?type=author&value=' + course)
+    fetch('http://125.22.54.221:8080/jspui/browse?type=author&value=' + course + "&sort_by=1&order=ASC&rpp=100&etal=0&submit_browse=Update")
     .then(res => res.text())
     .then(code => {
         const matches = code.toString().match(/<td headers="t2" ><a href="(.*?)"/g);
