@@ -25,7 +25,7 @@ const main = async (course) => {
                 const contentMatches = content.match(/<a target="_blank" href="(.*?)"/g);
                 contentMatches.forEach(link => {
                     const downloadLink = ('http://125.22.54.221:8080' + link.split(`href="`)[1].split(`"`)[0]);
-                    if(downloadLink.includes(".pdf") || downloadLink.includes(".rar") || downloadLink.includes(".doc") || downloadLink.includes(".docx")){
+                    if(downloadLink.toLowerCase().includes(".pdf") || downloadLink.toLowerCase().includes(".rar") || downloadLink.toLowerCase().includes(".doc") || downloadLink.toLowerCase().includes(".docx")){
                         const dl = new DownloaderHelper(downloadLink, './' + "PYQs_" + course + "/" + year + '/');
 
                         dl.on('end', () => console.log('Download Completed'));
