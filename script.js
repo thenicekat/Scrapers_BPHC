@@ -3,7 +3,8 @@ import { DownloaderHelper } from 'node-downloader-helper';
 import fs from 'fs';
 
 const main = async (course) => {
-    const url = encodeURI('http://125.22.54.221:8080/jspui/browse?type=author&value=' + (course) + "&sort_by=1&order=ASC&rpp=100&etal=0&submit_browse=Update");
+    
+    const url = encodeURI('http://125.22.54.221:8080/jspui/simple-search?location=%2F&query=&rpp=10&sort_by=score&order=desc&filter_field_1=author&filter_type_1=contains&filter_value_1=' + (course));
     fetch(url)
         .then(res => res.text())
         .then(code => {
