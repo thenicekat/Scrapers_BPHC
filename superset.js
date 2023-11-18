@@ -1,9 +1,10 @@
 import { launch } from "puppeteer";
 import fs from "fs";
+import "dotenv/config";
 
 const superset_url = "https://app.joinsuperset.com/students/jobprofiles";
-const superset_username = "YOUR_USERNAME";
-const superset_password = "YOUR_PASSWORD";
+const superset_username = process.env.SUPERSET_USERNAME;
+const superset_password = process.env.SUPERSET_PASSWORD;
 
 async function run() {
     const browser = await launch({
@@ -31,14 +32,10 @@ async function run() {
     let counter = 0;
 
     for (let i = 0; i < jobs.length; i++) {
-        console.log("Job " + counter++);
         let job = jobs[i];
+        await job.evaluate((b) => b.click());
 
         let currentjob = {};
-
-        // Click on the job division
-
-        await new Promise((resolve) => setTimeout(resolve, 20000));
 
         // wait for the job details to be present
         await page.waitForSelector(".css-1o88tww");
@@ -54,15 +51,20 @@ async function run() {
         await page.waitForSelector(".css-1lk8o79");
         // get the job details
         let jobdetails = await page.$$(".css-1lk8o79");
-        currentjob["companyName"] = await jobdetails[0].evaluate(
-            (node) => node.innerText
-        );
-        currentjob["companyLocation"] = await jobdetails[1].evaluate(
-            (node) => node.innerText
-        );
-        currentjob["companyType"] = await jobdetails[2].evaluate(
-            (node) => node.innerText
-        );
+        if (jobdetails.length >= 1)
+            currentjob["companyName"] = await jobdetails[0].evaluate(
+                (node) => node.innerText
+            );
+        if (jobdetails.length >= 2)
+            currentjob["companyLocation"] = await jobdetails[1].evaluate(
+                (node) => node.innerText
+            );
+        if (jobdetails.length >= 3)
+            currentjob["companyType"] = await jobdetails[2].evaluate(
+                (node) => node.innerText
+            );
+
+        console.log("Job " + counter++ + " " + currentjob["companyName"]);
 
         let jobdescription = [];
         // wait for the job details to be present
@@ -76,20 +78,18 @@ async function run() {
         }
 
         currentjob["jobDescription"] = jobdescription;
-        await job.evaluate((b) => b.click());
 
         job_data.push(currentjob);
-    }
 
-    // save the data
-    fs.writeFile(
-        "superset.json",
-        JSON.stringify(job_data, null, 2),
-        function (err) {
-            if (err) throw err;
-            console.log("Saved!");
-        }
-    );
+        // save the data
+        fs.writeFile(
+            "superset.json",
+            JSON.stringify(job_data, null, 2),
+            function (err) {
+                if (err) throw err;
+            }
+        );
+    }
 }
 
 run();
