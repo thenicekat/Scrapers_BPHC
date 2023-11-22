@@ -77,6 +77,22 @@ async function run() {
             );
         }
 
+        // scrap other info also
+        await page.waitForSelector(".css-49wp4c");
+        let otherinfo = await page.$$(".css-49wp4c");
+        currentjob["otherInfo"] = [];
+        for (let i = 0; i < otherinfo.length; i++) {
+            let info = await otherinfo[i].evaluate((node) => node.innerText);
+            // split by new line
+            info = info.split("\n");
+            // remove empty strings
+            info = info.filter((str) => str !== "");
+            // add these to the current job information
+            info.forEach((element) => {
+                currentjob["otherInfo"].push(element);
+            });
+        }
+
         currentjob["jobDescription"] = jobdescription;
 
         job_data.push(currentjob);
