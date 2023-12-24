@@ -25,7 +25,7 @@ const main = async (course) => {
                     )
                         .then((res) => res.text())
                         .then((content) => {
-                            const year = content
+                            let year = content
                                 .split(`name="citation_date" content=`)[1]
                                 .split(`"`)[1];
                             // check if year if of format 20XX or 20XX-05
