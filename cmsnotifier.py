@@ -39,7 +39,7 @@ while True:
     if response.status_code == 200:
         res = response.json()
         # check if there are any notifications
-        if res[0]['data']['unreadcount'] >= 0:
+        if res[0]['data']['unreadcount'] > 0:
             print('You have', res[0]['data']['unreadcount'], 'unread notifications')
             # If found create alert
             message = ''
