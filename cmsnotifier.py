@@ -38,14 +38,15 @@ while True:
     response = requests.post(url, headers=headers, data=data)
     if response.status_code == 200:
         res = response.json()
-        # check if there are any notifications
+        print('You have', res[0]['data']['unreadcount'], 'unread notifications')
+        # check if there are any notificationss
         if res[0]['data']['unreadcount'] > 0:
-            print('You have', res[0]['data']['unreadcount'], 'unread notifications')
             # If found create alert
             message = ''
             message += f"You have {res[0]['data']['unreadcount']} unread notifications"
+            message += '\n\n'
             for i in range(res[0]['data']['unreadcount']):
-                message += res[0]['data']['notifications'][i]['message'] + '\n'
+                message += res[0]['data']['notifications'][i]['subject'] + '\n'
             messagebox.showinfo("CMS Notifier", message)
             root.update()
     else:
