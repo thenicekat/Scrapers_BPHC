@@ -35,17 +35,19 @@ root = tkinter.Tk()
 root.withdraw()
 
 response = requests.post(url, headers=headers, data=data)
-if response.status_code == 200:
-    res = response.json()
-    # If found create alert
-    message = ''
-    message += f"You have {res[0]['data']['unreadcount']} unread notifications"
-    message += '\n\n'
-    
-    for i in range(res[0]['data']['unreadcount']):
-        message += res[0]['data']['notifications'][i]['subject'] + '\n'
+while True:
+    if response.status_code == 200:
+        res = response.json()
+        # If found create alert
+        message = ''
+        message += f"You have {res[0]['data']['unreadcount']} unread notifications"
+        message += '\n\n'
         
-    messagebox.showinfo("CMS Notifier", message)
-    root.update()
-else:
-    print('Failed to fetch notifications')
+        for i in range(res[0]['data']['unreadcount']):
+            message += res[0]['data']['notifications'][i]['subject'] + '\n'
+            
+        messagebox.showinfo("CMS Notifier", message)
+        root.update()
+    else:
+        print('Failed to fetch notifications')
+    time.sleep(600)
