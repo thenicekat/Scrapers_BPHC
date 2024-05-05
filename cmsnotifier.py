@@ -34,22 +34,18 @@ data = '[{"index":0,"methodname":"message_popup_get_popup_notifications","args":
 root = tkinter.Tk()
 root.withdraw()
 
-while True:
-    response = requests.post(url, headers=headers, data=data)
-    if response.status_code == 200:
-        res = response.json()
-        print('You have', res[0]['data']['unreadcount'], 'unread notifications')
-        # check if there are any notificationss
-        if res[0]['data']['unreadcount'] > 0:
-            # If found create alert
-            message = ''
-            message += f"You have {res[0]['data']['unreadcount']} unread notifications"
-            message += '\n\n'
-            for i in range(res[0]['data']['unreadcount']):
-                message += res[0]['data']['notifications'][i]['subject'] + '\n'
-            messagebox.showinfo("CMS Notifier", message)
-            root.update()
-    else:
-        print('Failed to fetch notifications')
-    # Sleep for 60 seconds
-    time.sleep(60)
+response = requests.post(url, headers=headers, data=data)
+if response.status_code == 200:
+    res = response.json()
+    # If found create alert
+    message = ''
+    message += f"You have {res[0]['data']['unreadcount']} unread notifications"
+    message += '\n\n'
+    
+    for i in range(res[0]['data']['unreadcount']):
+        message += res[0]['data']['notifications'][i]['subject'] + '\n'
+        
+    messagebox.showinfo("CMS Notifier", message)
+    root.update()
+else:
+    print('Failed to fetch notifications')
