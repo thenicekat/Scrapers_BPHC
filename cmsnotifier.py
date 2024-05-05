@@ -4,11 +4,17 @@ import requests
 import tkinter
 from tkinter import messagebox
 from dotenv import load_dotenv
+import argparse
 
 load_dotenv()
 
+parser = argparse.ArgumentParser()
+parser.add_argument('-t', '--refreshtime', type=int, default=600, help='Time in seconds to refresh the notifications')
+args = parser.parse_args()
+
 SESSION_KEY = os.getenv('SESSION_KEY')
 COOKIE = os.getenv('COOKIE')
+USER_ID = os.getenv('USER_ID')
 
 url = f'https://cms.bits-hyderabad.ac.in/lib/ajax/service.php?sesskey={SESSION_KEY}&info=message_popup_get_popup_notifications'
 headers = {
@@ -29,12 +35,13 @@ headers = {
     'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36',
     'x-requested-with': 'XMLHttpRequest'
 }
-data = '[{"index":0,"methodname":"message_popup_get_popup_notifications","args":{"limit":20,"offset":0,"useridto":"9546"}}]'
+data = '[{"index":0,"methodname":"message_popup_get_popup_notifications","args":{"limit":20,"offset":0,"useridto": ' + USER_ID + '}}]'
 
 root = tkinter.Tk()
 root.withdraw()
 
 response = requests.post(url, headers=headers, data=data)
+print("Using Refresh Time:", args.refreshtime, "seconds, to change use -t <time in seconds>")
 while True:
     if response.status_code == 200:
         res = response.json()
@@ -50,4 +57,4 @@ while True:
         root.update()
     else:
         print('Failed to fetch notifications')
-    time.sleep(600)
+    time.sleep(args.refreshtime)
