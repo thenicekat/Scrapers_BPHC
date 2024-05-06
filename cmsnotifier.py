@@ -50,11 +50,12 @@ while True:
         message += f"You have {res[0]['data']['unreadcount']} unread notifications"
         message += '\n\n'
         
-        for i in range(res[0]['data']['unreadcount']):
-            message += res[0]['data']['notifications'][i]['subject'] + '\n'
-            
-        messagebox.showinfo("CMS Notifier", message)
-        root.update()
+        if res[0]['data']['unreadcount'] != 0:
+            for i in range(res[0]['data']['unreadcount']):
+                message += res[0]['data']['notifications'][i]['subject'] + '\n'
+                
+            messagebox.showinfo("CMS Notifier", message)
+            root.update()
     else:
         print('Failed to fetch notifications')
     time.sleep(args.refreshtime)
