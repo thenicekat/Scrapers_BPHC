@@ -43,6 +43,7 @@ root.withdraw()
 response = requests.post(url, headers=headers, data=data)
 print("Using Refresh Time:", args.refreshtime, "seconds, to change use -t <time in seconds>")
 while True:
+    print("Checking for notifications...Time: " + str(time.time_ns()))
     if response.status_code == 200:
         res = response.json()
         # If found create alert
