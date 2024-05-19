@@ -5,6 +5,7 @@ import tkinter
 from tkinter import messagebox
 from dotenv import load_dotenv
 import argparse
+from tqdm import tqdm
 
 load_dotenv()
 
@@ -42,6 +43,9 @@ root.withdraw()
 
 response = requests.post(url, headers=headers, data=data)
 print("Using Refresh Time:", args.refreshtime, "seconds, to change use -t <time in seconds>")
+
+one_time_slot = args.refreshtime
+
 while True:
     print("Checking for notifications...Time: " + str(time.time_ns()))
     if response.status_code == 200:
@@ -50,13 +54,17 @@ while True:
         message = ''
         message += f"You have {res[0]['data']['unreadcount']} unread notifications"
         message += '\n\n'
-        
-        if res[0]['data']['unreadcount'] != 0:
-            for i in range(res[0]['data']['unreadcount']):
-                message += res[0]['data']['notifications'][i]['subject'] + '\n'
-                
-            messagebox.showinfo("CMS Notifier", message)
-            root.update()
+        try:
+            if res[0]['data']['unreadcount'] != 0:
+                for i in range(res[0]['data']['unreadcount']):
+                    message += res[0]['data']['notifications'][i]['subject'] + '\n'
+                    
+                messagebox.showinfo("CMS Notifier", message)
+                root.update()
+        except:
+            print(res)
     else:
         print('Failed to fetch notifications')
-    time.sleep(args.refreshtime)
+    # Sleep for a set time
+    for i in tqdm(range(one_time_slot)):
+        time.sleep(1)
